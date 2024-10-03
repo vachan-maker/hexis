@@ -10,3 +10,9 @@ print(names[2:4])
 
 print(names[:2])
 # prints the last two elements
+
+print(names[1:])
+# prints all elements
+
+print(names[::-1])
+# reverses list
