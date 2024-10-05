@@ -6,3 +6,5 @@ with open('/home/vachan/hexis/day4/file.txt',"r") as file:
 for line in lines:
     print(line.strip("\n"))
 #remove \n
+
+file.seek(0) #just for pointing cursor to first location
