@@ -10,7 +10,9 @@ def index():
 
 @app.route("/insert", methods=['POST'])
 def insert():
-    return render_template("insert.html")
+    name = request.form["name"]
+    place = request.form["place"]
+    return render_template("insert.html", userName = name, userPlace = place)
 
 @app.route("/form")
 def form():
