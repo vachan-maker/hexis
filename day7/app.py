@@ -1,8 +1,19 @@
 from flask import Flask, render_template,request,redirect,url_for
+from sqlalchemy import create_engine, text
 import pip._vendor.requests as requests
 import json
 
 app = Flask(__name__)
+engine = create_engine("sqlite:///example.db")
+
+with engine.connect() as connection:
+    connection.execute(text("""
+        CREATE TABLE IF NOT EXISTS details (
+            name VARCHAR(30),
+            place VARCHAR(20)
+        )
+    """))
+
 
 @app.route('/')
 def index():
