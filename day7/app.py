@@ -17,23 +17,40 @@ with engine.connect() as connection:
 
 @app.route('/')
 def index():
-    namesList = ["Solomon","Hari", "Bob"]
-    return render_template('index.html', names = namesList)
+    data = []
+    with engine.connect() as connection:
+        results = connection.execute(text("""
+        SELECT * FROM details
+"""))
+        for row in results:
+            data.append({"name":row[0], "place":row[1]})
+    return data
+
+@app.route('/sabumon')
+def sabumon():
+    data = []
+    with engine.connect() as connection:
+        results = connection.execute(text("""
+        SELECT * FROM details WHERE name CONTAINS 'Sabu'
+"""))
+        for row in results:
+            data.append({"name":row[0], "place":row[1]})
+    return data
 
 @app.route("/insert", methods=['POST'])
 def insert():
     name = request.form["name"]
     place = request.form["place"]
+    details = {
+        "name":name,
+        "place":place
+    }
     print("before database connection")
-    try:
-        with engine.connect() as connection:
-            connection.execute(
-                text("INSERT INTO details (name, place) VALUES (:name, :place)"),
-                {"name": name, "place": place}
-            )
-    except Exception as e:
-        print(f"Error inserting data: {e}")
-
+    with engine.connect() as connection:
+        result = connection.execute(text("""
+            INSERT INTO details (name, place) VALUES (:name, :place)
+        """), {"name": name, "place": place})
+        connection.commit() 
     return render_template("insert.html", userName=name, userPlace=place)
 
 
