@@ -24,14 +24,18 @@ def index():
 def insert():
     name = request.form["name"]
     place = request.form["place"]
-    details = {
-        "name":name,
-        "place":place
-    }
-    with open('data.json','w') as f:
-        json_data = json.dumps(details)
-        f.write(json_data)
-    return render_template("insert.html", userName = name, userPlace = place)
+    print("before database connection")
+    try:
+        with engine.connect() as connection:
+            connection.execute(
+                text("INSERT INTO details (name, place) VALUES (:name, :place)"),
+                {"name": name, "place": place}
+            )
+    except Exception as e:
+        print(f"Error inserting data: {e}")
+
+    return render_template("insert.html", userName=name, userPlace=place)
+
 
 @app.route("/form")
 def form():
